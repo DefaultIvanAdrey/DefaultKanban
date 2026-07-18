@@ -2036,6 +2036,7 @@
       if (e.button !== undefined && e.button !== 0) return;
       if (e.target.closest(".icon-btn")) return;
       const cardEl = e.currentTarget;
+      const pointerId = e.pointerId;
       const startX = e.clientX, startY = e.clientY;
       const rect = cardEl.getBoundingClientRect();
       const offsetX = startX - rect.left;
@@ -2044,25 +2045,34 @@
       const cardId = cardEl.dataset.id;
       let started = false;
 
+      // Explicitly capture the pointer to the card. Without this, mobile
+      // browsers can lose the active touch (firing a stray pointercancel)
+      // the moment the card gets opacity:0 / pointer-events:none during
+      // the drag, which made drops feel like they never registered.
+      try { cardEl.setPointerCapture(pointerId); } catch (_) { }
+
       function onMove(ev) {
+        if (ev.pointerId !== pointerId) return;
         if (!started) {
           const dx = ev.clientX - startX, dy = ev.clientY - startY;
           if (dx * dx + dy * dy < 36) return;
           started = true;
           beginDrag(cardEl, ev, { offsetX, offsetY, fromColId, cardId });
         }
-        if (started) onDragMove(ev);
+        if (started) { ev.preventDefault(); onDragMove(ev); }
       }
       function onUp(ev) {
+        if (ev.pointerId !== pointerId) return;
         document.removeEventListener("pointermove", onMove);
         document.removeEventListener("pointerup", onUp);
         document.removeEventListener("pointercancel", onUp);
+        try { cardEl.releasePointerCapture(pointerId); } catch (_) { }
         if (started) {
           cardEl.dataset.suppressClick = "1";
           onDragEnd(ev);
         }
       }
-      document.addEventListener("pointermove", onMove);
+      document.addEventListener("pointermove", onMove, { passive: false });
       document.addEventListener("pointerup", onUp);
       document.addEventListener("pointercancel", onUp);
     }

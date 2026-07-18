@@ -1091,6 +1091,165 @@
       background: color-mix(in srgb, var(--link) 22%, transparent)
     }
 
+    /* Task editor (create / edit) — fixed header + buttons, scrollable body */
+    .modal.modal-editor {
+      display: flex;
+      flex-direction: column;
+      width: min(680px, 100%);
+      height: min(82vh, 640px);
+      max-height: 82vh;
+      overflow: hidden;
+      padding: 22px;
+    }
+
+    .editor-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      flex: 0 0 auto;
+    }
+
+    .editor-header-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1 1 220px;
+      min-width: 180px;
+    }
+
+    .editor-mode-label {
+      font-weight: 200;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: var(--ink-dim);
+    }
+
+    .modal-editor .editor-title-input {
+      width: 100%;
+      padding: 4px 2px;
+      margin-top: 0;
+      border: 0;
+      border-bottom: 1px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      font-size: 21px;
+      color: var(--ink-strong);
+      letter-spacing: .3px;
+    }
+
+    .modal-editor .editor-title-input:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 2px;
+      flex: 0 0 auto;
+    }
+
+    .editor-actions button.active {
+      border-color: var(--accent);
+      color: var(--accent-2);
+      background: var(--accent-soft-08);
+    }
+
+    .editor-link-row {
+      flex: 0 0 auto;
+      margin-top: 10px;
+    }
+
+    .modal-editor .editor-link-row input {
+      margin-top: 0;
+    }
+
+    .editor-divider {
+      height: 1px;
+      margin: 14px 0 0;
+      background: var(--input-border);
+      opacity: .6;
+      flex: 0 0 auto;
+    }
+
+    .editor-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-top: 14px;
+      display: flex;
+    }
+
+    .modal-editor .editor-desc {
+      width: 100%;
+      height: 100%;
+      margin-top: 0;
+      resize: none;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    /* Volume control */
+    .menu-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 8px 12px;
+      color: var(--ink);
+      font-size: 12px;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+    }
+
+    .menu-row .volume-label {
+      color: var(--ink-dim);
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--input-border);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
+      cursor: pointer;
+      border: 0;
+      margin-top: -5px;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      border: 0;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 4px;
+      border-radius: 999px;
+      background: var(--input-border);
+    }
+
     .theme-menu {
       position: fixed;
       z-index: 600;
@@ -1300,6 +1459,10 @@
       <button class="menu-item" id="exportBtn">Export</button>
       <div class="menu-divider"></div>
       <button class="menu-item" id="muteFab">Sound: On</button>
+      <div class="menu-row" id="volumeItem">
+        <span class="volume-label">Volume</span>
+        <input type="range" id="volumeSlider" min="0" max="100" value="60" step="1" aria-label="SFX volume" />
+      </div>
       <button class="menu-item" id="themeBtn" title="Themes" aria-label="Themes">Themes</button>
       <div class="menu-divider"></div>
       <button class="menu-item menu-item-danger" id="resetBtn">Reset</button>
@@ -1314,18 +1477,27 @@
   </div>
 
   <div class="modal-back" id="editModal">
-    <div class="modal">
-      <h3 id="editModalTitle">New Task</h3>
-      <div class="label">Title</div>
-      <input id="cardTitleInput" placeholder="e.g. Training" autocomplete="off" />
-      <div class="label">Link (optional)</div>
-      <input id="cardLinkInput" type="url" placeholder="https://example.com" autocomplete="off" />
-      <div class="hint">Appears as <code>↗</code> on the card. Falls back to first URL in description.</div>
-      <div class="label">Description</div>
-      <textarea id="cardDescInput" placeholder="Add details. URLs in the description become clickable."></textarea>
-      <div class="modal-row">
-        <button id="editCancelBtn">Cancel</button>
-        <button id="editSaveBtn" class="primary">Save</button>
+    <div class="modal modal-editor">
+      <div class="editor-header">
+        <div class="editor-header-main">
+          <div class="editor-mode-label" id="editModalTitle">New Task</div>
+          <input id="cardTitleInput" class="editor-title-input" placeholder="Untitled task" autocomplete="off" />
+        </div>
+        <div class="editor-actions">
+          <button type="button" id="editLinkToggleBtn">Link (Optional)</button>
+          <button type="button" id="editDuplicateBtn" hidden>Duplicate</button>
+          <button type="button" id="editCancelBtn">Cancel</button>
+          <button type="button" id="editSaveBtn" class="primary">Save</button>
+        </div>
+      </div>
+      <div class="editor-link-row" id="editorLinkRow" hidden>
+        <input id="cardLinkInput" type="url" placeholder="https://example.com" autocomplete="off" />
+        <div class="hint">Appears as <code>↗</code> on the card. Falls back to first URL in description.</div>
+      </div>
+      <div class="editor-divider"></div>
+      <div class="editor-body">
+        <textarea id="cardDescInput" class="editor-desc"
+          placeholder="Add details. URLs in the description become clickable."></textarea>
       </div>
     </div>
   </div>
@@ -1432,6 +1604,7 @@
     const THEME_KEY = "kanban.v5.theme";
     const CUSTOM_KEY = "kanban.v5.customThemes";
     const MUTE_KEY = "kanban.v5.muted";
+    const VOLUME_KEY = "kanban.v5.volume";
 
     function rid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4) }
     function defaultColumns() {
@@ -2041,14 +2214,32 @@
     const cardTitleInput = document.getElementById("cardTitleInput");
     const cardLinkInput = document.getElementById("cardLinkInput");
     const cardDescInput = document.getElementById("cardDescInput");
+    const editorLinkRow = document.getElementById("editorLinkRow");
+    const editLinkToggleBtn = document.getElementById("editLinkToggleBtn");
+    const editDuplicateBtn = document.getElementById("editDuplicateBtn");
     let editContext = null;
 
     function clearEditFields() { cardTitleInput.value = ""; cardLinkInput.value = ""; cardDescInput.value = "" }
+
+    function updateLinkToggleState() {
+      const hasLink = !!cardLinkInput.value.trim();
+      editLinkToggleBtn.classList.toggle("active", hasLink || !editorLinkRow.hidden);
+      editLinkToggleBtn.textContent = hasLink ? "Link ✓" : "Link (Optional)";
+    }
+    editLinkToggleBtn.addEventListener("click", () => {
+      editorLinkRow.hidden = !editorLinkRow.hidden;
+      if (!editorLinkRow.hidden) setTimeout(() => cardLinkInput.focus(), 30);
+      updateLinkToggleState();
+    });
+    cardLinkInput.addEventListener("input", updateLinkToggleState);
 
     function openAddModal(colId) {
       editContext = { mode: "add", colId };
       editTitle.textContent = "New Task";
       clearEditFields();
+      editorLinkRow.hidden = true;
+      editDuplicateBtn.hidden = true;
+      updateLinkToggleState();
       showModal(editModal); setTimeout(() => cardTitleInput.focus(), 30);
     }
     function openEditModal(colId, id) {
@@ -2060,10 +2251,14 @@
       cardTitleInput.value = card.title || "";
       cardLinkInput.value = card.link || "";
       cardDescInput.value = card.description || "";
+      editorLinkRow.hidden = !(card.link && card.link.trim());
+      editDuplicateBtn.hidden = false;
+      updateLinkToggleState();
       showModal(editModal); setTimeout(() => cardTitleInput.focus(), 30);
     }
     document.getElementById("editCancelBtn").addEventListener("click", () => hideModal(editModal));
     document.getElementById("editSaveBtn").addEventListener("click", saveEdit);
+    document.getElementById("editDuplicateBtn").addEventListener("click", duplicateCard);
     cardTitleInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); saveEdit() } });
     cardLinkInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); saveEdit() } });
 
@@ -2084,6 +2279,26 @@
       editContext = null;
       hideModal(editModal); clearEditFields();
       markDirty(); renderActiveBoard();
+    }
+
+    function duplicateCard() {
+      if (!editContext || editContext.mode !== "edit") return;
+      const title = cardTitleInput.value.trim();
+      const link = cardLinkInput.value.trim();
+      const desc = cardDescInput.value;
+      if (!title) { toast("Add a title first"); return }
+      if (link && !isValidUrl(link)) { toast("Link must start with http:// or https://"); return }
+      const col = findCol(editContext.colId); if (!col) return;
+      const idx = col.cards.findIndex(c => c.id === editContext.id);
+      if (idx === -1) return;
+      col.cards[idx].title = title; col.cards[idx].link = link; col.cards[idx].description = desc;
+      const copy = { id: rid(), title, link, description: desc };
+      col.cards.splice(idx + 1, 0, copy);
+      editContext = null;
+      hideModal(editModal); clearEditFields();
+      markDirty(); renderActiveBoard();
+      sfx.pop();
+      toast("Task duplicated");
     }
 
     const viewModal = document.getElementById("viewModal");
@@ -2482,7 +2697,11 @@
        SOUND FX
     ========================================================= */
     let muted = localStorage.getItem(MUTE_KEY) === "1";
+    let volume = parseFloat(localStorage.getItem(VOLUME_KEY));
+    if (!Number.isFinite(volume) || volume < 0 || volume > 1) volume = 0.6;
     const muteFab = document.getElementById("muteFab");
+    const volumeSlider = document.getElementById("volumeSlider");
+    volumeSlider.value = Math.round(volume * 100);
     function refreshMuteIcon() { muteFab.textContent = muted ? "Sound: Off" : "Sound: On"; muteFab.title = muted ? "Sounds off" : "Sounds on" }
     refreshMuteIcon();
     muteFab.addEventListener("click", e => {
@@ -2492,11 +2711,18 @@
       refreshMuteIcon();
       if (!muted) sfx.click();
     });
+    volumeSlider.addEventListener("click", e => e.stopPropagation());
+    volumeSlider.addEventListener("input", () => {
+      volume = Math.min(100, Math.max(0, Number(volumeSlider.value))) / 100;
+      localStorage.setItem(VOLUME_KEY, String(volume));
+      if (muted && volume > 0) { muted = false; localStorage.setItem(MUTE_KEY, "0"); refreshMuteIcon() }
+    });
+    volumeSlider.addEventListener("change", () => { if (volume > 0) sfx.click(); });
 
     const sfx = (() => {
       let ctx;
       function ensure() {
-        if (muted) return null;
+        if (muted || volume <= 0) return null;
         if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
         if (ctx.state === "suspended") ctx.resume();
         return ctx;
@@ -2508,7 +2734,7 @@
         osc.type = type; osc.frequency.setValueAtTime(freq, now);
         if (freqEnd) osc.frequency.exponentialRampToValueAtTime(freqEnd, now + dur);
         g.gain.setValueAtTime(0.0001, now);
-        g.gain.exponentialRampToValueAtTime(vol, now + 0.005);
+        g.gain.exponentialRampToValueAtTime(vol * volume, now + 0.005);
         g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
         let node = osc;
         if (filter) {
@@ -2523,6 +2749,10 @@
         hover() { tone({ type: "sine", freq: 1400, freqEnd: 1200, dur: 0.045, vol: 0.018 }) },
         click() { tone({ type: "triangle", freq: 880, freqEnd: 520, dur: 0.07, vol: 0.05 }) },
         pluck() { tone({ type: "triangle", freq: 660, freqEnd: 330, dur: 0.18, vol: 0.18, filter: { type: "lowpass", freq: 2400 } }) },
+        type() {
+          const f = 1200 + Math.random() * 500;
+          tone({ type: "triangle", freq: f, freqEnd: f * 0.85, dur: 0.026, vol: 0.03 });
+        },
         pop() {
           const ac = ensure(); if (!ac) return;
           const now = ac.currentTime;
@@ -2531,7 +2761,7 @@
           osc.frequency.setValueAtTime(220, now);
           osc.frequency.exponentialRampToValueAtTime(90, now + 0.1);
           og.gain.setValueAtTime(0.0001, now);
-          og.gain.exponentialRampToValueAtTime(0.22, now + 0.005);
+          og.gain.exponentialRampToValueAtTime(0.22 * volume, now + 0.005);
           og.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
           osc.connect(og).connect(ac.destination);
           osc.start(now); osc.stop(now + 0.18);
@@ -2540,7 +2770,7 @@
           const d = buf.getChannelData(0);
           for (let i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
           const n = ac.createBufferSource(); const ng = ac.createGain();
-          ng.gain.value = 0.12; n.buffer = buf;
+          ng.gain.value = 0.12 * volume; n.buffer = buf;
           n.connect(ng).connect(ac.destination); n.start(now);
         }
       };
@@ -2564,6 +2794,15 @@
       if (e.target.matches('input, textarea, button')) sfx.hover();
     });
     window.addEventListener("pointerdown", () => { try { (new (window.AudioContext || window.webkitAudioContext)()).resume?.() } catch { } }, { once: true });
+
+    const TEXT_INPUT_TYPES = ["text", "search", "url", "email", "tel", "password", "number"];
+    document.addEventListener('input', e => {
+      const el = e.target;
+      const isTextField = el.tagName === "TEXTAREA" ||
+        (el.tagName === "INPUT" && TEXT_INPUT_TYPES.includes(el.type));
+      if (!isTextField) return;
+      if (e.inputType && e.inputType.startsWith("insert")) sfx.type();
+    });
 
     /* =========================================================
        BOOT

@@ -361,6 +361,10 @@
       background: var(--accent-soft-12)
     }
 
+    .menu-item[hidden] {
+      display: none
+    }
+
     .menu-item-danger:hover {
       color: var(--danger);
       background: color-mix(in srgb, var(--danger) 14%, transparent)
@@ -1453,6 +1457,7 @@
     </div>
 
     <div class="app-menu" id="appMenu">
+      <button class="menu-item" id="installBtn" hidden>Install App</button>
       <button class="menu-item" id="importBtn">Import</button>
       <button class="menu-item" id="saveBtn">Save</button>
       <button class="menu-item" id="saveAsBtn">Save As</button>
@@ -2113,7 +2118,6 @@
     function onDragMove(ev) {
       if (!drag) return;
       positionGhost(ev.clientX, ev.clientY);
-      const lists = document.querySelectorAll("[data-col-id].list, .list[data-col-id]");
       let targetList = null;
       // Use all .list elements
       for (const l of document.querySelectorAll(".list")) {
@@ -2826,7 +2830,7 @@
     });
 
     /* =========================================================
-       SERVICE WORKER
+       SERVICE WORKER (enables offline use once installed / revisited)
     ========================================================= */
     if ("serviceWorker" in navigator) {
       const swCode = `
@@ -2870,6 +2874,49 @@
       const url = URL.createObjectURL(blob);
       navigator.serviceWorker.register(url).catch(() => { });
     }
+
+    /* =========================================================
+       INSTALL AS APP (PWA "Add to Home Screen" / desktop install)
+    ========================================================= */
+    const installBtn = document.getElementById("installBtn");
+    let deferredInstallPrompt = null;
+    const isStandalone = () =>
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+
+    function updateInstallVisibility() {
+      // Only show the button when the browser has actually offered an
+      // install prompt (Chrome/Edge/Android) and the app isn't already
+      // running as an installed PWA.
+      installBtn.hidden = !deferredInstallPrompt || isStandalone();
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      updateInstallVisibility();
+    });
+
+    installBtn.addEventListener("click", async () => {
+      closeAppMenu();
+      if (!deferredInstallPrompt) {
+        toast(isStandalone() ? "Already installed" : "Install not available in this browser");
+        return;
+      }
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      updateInstallVisibility();
+      toast(outcome === "accepted" ? "Installing…" : "Install dismissed");
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      updateInstallVisibility();
+      toast("Installed! You can now launch it offline from your home screen / app list.");
+    });
+
+    updateInstallVisibility();
   </script>
 </body>
 

@@ -19,18 +19,18 @@
             src: "data:image/svg+xml;utf8," + encodeURIComponent(
               '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">' +
               '<rect width="192" height="192" rx="36" fill="#091233"/>' +
-              '<rect x="28" y="40" width="36" height="112" rx="10" fill="#4aa3ff"/>' +
-              '<rect x="78" y="40" width="36" height="80" rx="10" fill="#7ec0ff"/>' +
-              '<rect x="128" y="40" width="36" height="56" rx="10" fill="#b9defe"/></svg>'),
+              '<g transform="translate(24,24) scale(1.125)">' +
+              '<path d="M38.5455 81.4548L38.5455 116.364C38.5455 122.79 33.3357 128 26.9091 128L11.6364 128C5.20978 128 9.10915e-07 122.79 2.03457e-06 116.364L2.03457e-05 11.6366C2.14693e-05 5.21001 5.20981 0.000229035 11.6364 0.00023044L26.9091 0.000233825C33.3357 0.00023523 38.5455 5.21002 38.5455 11.6366L38.5455 46.5457L59.8293 46.5455C64.311 46.5455 68.6092 44.7651 71.7782 41.5961C74.9473 38.427 76.7277 34.1288 76.7276 29.647L76.7276 11.6364C76.7276 5.2098 81.9373 1.43264e-05 88.3639 1.545e-05L122.829 2.1476e-05C125.685 2.19754e-05 128 2.31547 128 5.17174C128 25.6464 113.127 42.6475 93.596 45.9609C89.1774 46.7105 85.2167 47.7791 81.6771 51.4949C78.0546 55.2979 76.7277 58.748 76.7277 64.0002C76.7277 69.2523 78.0546 72.7024 81.6771 76.5054C85.2167 80.2212 89.1773 81.2898 93.596 82.0394C113.127 85.3529 128 102.354 128 122.829C128 125.685 125.685 128 122.829 128L88.3639 128C81.9373 128 76.7275 122.791 76.7275 116.364L76.7276 98.3533C76.7277 93.8715 74.9473 89.5733 71.7782 86.4042C68.6092 83.2352 64.311 81.4548 59.8293 81.4548L38.5455 81.4548Z" fill="#B6D1E4"/>' +
+              '</g></svg>'),
             sizes: "192x192", type: "image/svg+xml", purpose: "any maskable"
           },
           {
             src: "data:image/svg+xml;utf8," + encodeURIComponent(
               '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">' +
               '<rect width="512" height="512" rx="96" fill="#091233"/>' +
-              '<rect x="74" y="106" width="96" height="300" rx="26" fill="#4aa3ff"/>' +
-              '<rect x="208" y="106" width="96" height="214" rx="26" fill="#7ec0ff"/>' +
-              '<rect x="342" y="106" width="96" height="150" rx="26" fill="#b9defe"/></svg>'),
+              '<g transform="translate(64,64) scale(3)">' +
+              '<path d="M38.5455 81.4548L38.5455 116.364C38.5455 122.79 33.3357 128 26.9091 128L11.6364 128C5.20978 128 9.10915e-07 122.79 2.03457e-06 116.364L2.03457e-05 11.6366C2.14693e-05 5.21001 5.20981 0.000229035 11.6364 0.00023044L26.9091 0.000233825C33.3357 0.00023523 38.5455 5.21002 38.5455 11.6366L38.5455 46.5457L59.8293 46.5455C64.311 46.5455 68.6092 44.7651 71.7782 41.5961C74.9473 38.427 76.7277 34.1288 76.7276 29.647L76.7276 11.6364C76.7276 5.2098 81.9373 1.43264e-05 88.3639 1.545e-05L122.829 2.1476e-05C125.685 2.19754e-05 128 2.31547 128 5.17174C128 25.6464 113.127 42.6475 93.596 45.9609C89.1774 46.7105 85.2167 47.7791 81.6771 51.4949C78.0546 55.2979 76.7277 58.748 76.7277 64.0002C76.7277 69.2523 78.0546 72.7024 81.6771 76.5054C85.2167 80.2212 89.1773 81.2898 93.596 82.0394C113.127 85.3529 128 102.354 128 122.829C128 125.685 125.685 128 122.829 128L88.3639 128C81.9373 128 76.7275 122.791 76.7275 116.364L76.7276 98.3533C76.7277 93.8715 74.9473 89.5733 71.7782 86.4042C68.6092 83.2352 64.311 81.4548 59.8293 81.4548L38.5455 81.4548Z" fill="#B6D1E4"/>' +
+              '</g></svg>'),
             sizes: "512x512", type: "image/svg+xml", purpose: "any maskable"
           }
         ]
@@ -2650,6 +2650,13 @@
     const siteIconImg = document.getElementById("siteIconImg");
     const siteIconRemove = document.getElementById("siteIconRemove");
 
+    // Default app logo (used until the user uploads their own SVG via the
+    // icon box). Stored as raw SVG markup so it can be reused both as the
+    // favicon/toolbar icon (transparent, no background) and re-encoded
+    // with a background for the PWA manifest icons above.
+    const DEFAULT_LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none"><path d="M38.5455 81.4548L38.5455 116.364C38.5455 122.79 33.3357 128 26.9091 128L11.6364 128C5.20978 128 9.10915e-07 122.79 2.03457e-06 116.364L2.03457e-05 11.6366C2.14693e-05 5.21001 5.20981 0.000229035 11.6364 0.00023044L26.9091 0.000233825C33.3357 0.00023523 38.5455 5.21002 38.5455 11.6366L38.5455 46.5457L59.8293 46.5455C64.311 46.5455 68.6092 44.7651 71.7782 41.5961C74.9473 38.427 76.7277 34.1288 76.7276 29.647L76.7276 11.6364C76.7276 5.2098 81.9373 1.43264e-05 88.3639 1.545e-05L122.829 2.1476e-05C125.685 2.19754e-05 128 2.31547 128 5.17174C128 25.6464 113.127 42.6475 93.596 45.9609C89.1774 46.7105 85.2167 47.7791 81.6771 51.4949C78.0546 55.2979 76.7277 58.748 76.7277 64.0002C76.7277 69.2523 78.0546 72.7024 81.6771 76.5054C85.2167 80.2212 89.1773 81.2898 93.596 82.0394C113.127 85.3529 128 102.354 128 122.829C128 125.685 125.685 128 122.829 128L88.3639 128C81.9373 128 76.7275 122.791 76.7275 116.364L76.7276 98.3533C76.7277 93.8715 74.9473 89.5733 71.7782 86.4042C68.6092 83.2352 64.311 81.4548 59.8293 81.4548L38.5455 81.4548Z" fill="#B6D1E4"/></svg>';
+    const DEFAULT_LOGO_DATA_URI = "data:image/svg+xml;utf8," + encodeURIComponent(DEFAULT_LOGO_SVG);
+
     function setFavicon(href) {
       let link = document.getElementById("faviconLink");
       if (!href) { if (link) link.remove(); return }
@@ -2675,7 +2682,9 @@
       }
       setFavicon(dataUri);
     }
-    applySiteIcon(localStorage.getItem(SITE_ICON_KEY));
+    // Precedence: explicit user upload > explicit "removed" (none) > default logo.
+    const storedIcon = localStorage.getItem(SITE_ICON_KEY);
+    applySiteIcon(storedIcon === "none" ? null : (storedIcon || DEFAULT_LOGO_DATA_URI));
 
     siteIconBox.addEventListener("click", e => {
       if (e.target === siteIconRemove) return;
@@ -2683,7 +2692,7 @@
     });
     siteIconRemove.addEventListener("click", e => {
       e.stopPropagation();
-      localStorage.removeItem(SITE_ICON_KEY);
+      localStorage.setItem(SITE_ICON_KEY, "none");
       applySiteIcon(null);
       toast("Icon removed");
     });

@@ -65,6 +65,13 @@
 .board::-webkit-scrollbar,.boards-tabs::-webkit-scrollbar{height:8px}
 .board::-webkit-scrollbar-thumb,.boards-tabs::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent) 20%,transparent);border-radius:8px}
 .column{position:relative;border-radius:26px;padding:18px 14px 14px;display:flex;flex-direction:column;min-height:0;flex:0 0 max(260px,calc((100% - 90px)/4));max-width:max(260px,calc((100% - 90px)/4));background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0) 35%),linear-gradient(180deg,var(--panel-1) 0%,var(--panel-2) 55%,var(--panel-3) 100%);box-shadow:var(--shadow-strong),var(--rim-inset);overflow:hidden;isolation:isolate}
+.column-add-btn{align-items:center;justify-content:center;gap:10px;min-height:140px;border:1.5px dashed var(--input-border);background:rgba(255,255,255,.02);box-shadow:none;color:var(--ink-dim);cursor:pointer;font:inherit;-webkit-appearance:none;appearance:none;transition:border-color .15s,background .15s,color .15s}
+.column-add-btn:focus-visible{outline:2px solid var(--accent-edge-45);outline-offset:2px}
+.column-add-btn:hover{border-color:var(--accent-edge-45);color:var(--ink-strong);background:var(--accent-soft-08)}
+.column-add-btn .cab-icon{font-size:30px;line-height:1;font-weight:300}
+.column-add-btn .cab-label{font-size:13px;letter-spacing:1.5px;text-transform:uppercase}
+.column-add-btn .cab-paste{margin-top:8px;font-size:12px;letter-spacing:.3px;text-transform:none;padding:8px 14px;border-radius:12px;background:var(--accent-soft-12);color:var(--ink-strong);transition:background .15s}
+.column-add-btn .cab-paste:hover{background:var(--accent-soft-18)}
 .col-gap{flex:0 0 8px;align-self:stretch;cursor:context-menu;border-radius:6px;transition:background .12s;min-width:8px}
 .col-gap:hover{background:var(--accent-soft-08)}
 .col-head{display:flex;align-items:center;gap:8px;padding:4px 8px 12px;touch-action:pan-x}
@@ -101,7 +108,10 @@
 .modal-back.show{display:flex}
 .modal{width:min(680px,100%);max-height:88vh;overflow:auto;border-radius:22px;padding:22px;background:linear-gradient(180deg,var(--modal-1),var(--modal-2));box-shadow:0 40px 80px -20px rgba(0,0,0,.5),var(--rim-inset);color:var(--ink)}
 .modal.narrow{width:min(360px,100%)}
-.modal h3{margin:0 0 6px;font-weight:200;letter-spacing:2px;text-transform:uppercase;font-size:13px;color:var(--ink-dim)}
+.modal h3{margin:0;font-weight:200;letter-spacing:2px;text-transform:uppercase;font-size:13px;color:var(--ink-dim);white-space:nowrap}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.modal-head-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.modal-head-actions button{padding:8px 13px;font-size:12px}
 .modal input,.modal textarea{width:100%;padding:12px 14px;border-radius:12px;margin-top:6px;background:var(--input-bg);border:1px solid var(--input-border);color:var(--ink);font:200 15px Inter,system-ui,sans-serif;outline:none}
 .modal textarea{min-height:180px;line-height:1.5;resize:vertical}
 .modal-row{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;flex-wrap:wrap}
@@ -118,6 +128,12 @@
 .menu-item.danger:hover{color:var(--danger);background:color-mix(in srgb,var(--danger) 14%,transparent)}
 .menu-divider{height:1px;margin:6px 4px;background:var(--input-border);opacity:.6}
 .menu-row{display:grid;grid-template-columns:1fr 110px;align-items:center;gap:10px;padding:8px 12px;font-size:12px;color:var(--ink-dim);letter-spacing:.6px;text-transform:uppercase}
+.sound-row{grid-template-columns:1fr auto}
+.sound-controls{display:flex;align-items:center;gap:8px}
+.sound-controls input[type=range]{width:88px}
+.sound-mute-btn{flex:0 0 auto;width:28px;height:28px;border-radius:9px;border:1px solid var(--input-border);background:var(--panel-2);color:var(--ink-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:color .15s,border-color .15s,background .15s}
+.sound-mute-btn:hover{color:var(--ink-strong);border-color:var(--accent-edge-45)}
+.sound-mute-btn.is-muted{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,transparent);background:color-mix(in srgb,var(--danger) 14%,transparent)}
 .menu-row input[type=range]{width:110px}
 .menu-row input[type=number]{width:90px;padding:6px 8px;margin-top:0;border-radius:8px;background:var(--input-bg);border:1px solid var(--input-border);color:var(--ink);font:200 13px Inter,system-ui,sans-serif}
 .menu-section-label{padding:8px 12px 2px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-dim);opacity:.75}
@@ -187,12 +203,16 @@
   .modal.narrow{width:min(360px,92vw);border-radius:20px;margin:0 auto;max-height:none}
   .modal-row{gap:8px}
   .modal-row button{flex:1;min-width:0;padding:12px 14px}
+  .modal-head{gap:8px 10px}
+  .modal-head-actions{gap:6px;width:100%}
+  .modal-head-actions button{flex:1;min-width:0;padding:9px 8px;font-size:11.5px}
 
   /* Turn dropdown menus into bottom sheets so they can never render off-screen */
   .app-menu,.theme-menu{position:fixed!important;left:0!important;right:0!important;top:auto!important;bottom:0!important;width:100%;max-width:none;min-width:0;border-radius:18px 18px 0 0;max-height:75dvh;overflow-y:auto;padding:8px 10px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -20px 50px -10px rgba(0,0,0,.6),var(--rim-inset)}
   .app-menu::before,.theme-menu::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--input-border);margin:4px auto 8px;flex-shrink:0}
   .menu-item{padding:13px 14px;font-size:13px}
   .menu-row{padding:10px 12px}
+  .sound-controls input[type=range]{width:66px}
   #appMenu.show~.menu-backdrop,#themeMenu.show~.menu-backdrop{opacity:1;pointer-events:auto}
 
   .context-menu{position:fixed!important;left:12px!important;right:12px!important;top:auto!important;bottom:calc(14px + env(safe-area-inset-bottom))!important;width:auto;max-width:none;min-width:0;max-height:60dvh;overflow-y:auto}
@@ -250,10 +270,12 @@
     <div class="menu-row"><span>Default (min)</span><input type="number" id="pomoDefaultInput" min="1" max="600" value="25"></div>
     <div class="menu-row"><span>Maximum (min)</span><input type="number" id="pomoMaxInput" min="1" max="600" value="25"></div>
     <div class="menu-divider"></div>
+    <div class="menu-section-label">Sound</div>
     <button class="menu-item" id="muteFab">Sound: On</button>
-    <div class="menu-row"><span>SFX Volume</span><input type="range" id="sfxVolume" min="0" max="100" value="60"></div>
-    <div class="menu-row"><span>Ticking Volume</span><input type="range" id="tickVolume" min="0" max="100" value="35"></div>
-    <div class="menu-row"><span>Ring Volume</span><input type="range" id="ringVolume" min="0" max="100" value="70"></div>
+    <div class="menu-row sound-row"><span>Typing</span><div class="sound-controls"><button class="sound-mute-btn" id="typingMuteBtn" title="Mute typing clicks">🔊</button><input type="range" id="typingVolume" min="0" max="100" value="40"></div></div>
+    <div class="menu-row sound-row"><span>Interface</span><div class="sound-controls"><button class="sound-mute-btn" id="sfxMuteBtn" title="Mute interface sounds">🔊</button><input type="range" id="sfxVolume" min="0" max="100" value="60"></div></div>
+    <div class="menu-row sound-row"><span>Ticking</span><div class="sound-controls"><button class="sound-mute-btn" id="tickMuteBtn" title="Mute ticking">🔊</button><input type="range" id="tickVolume" min="0" max="100" value="35"></div></div>
+    <div class="menu-row sound-row"><span>Ring</span><div class="sound-controls"><button class="sound-mute-btn" id="ringMuteBtn" title="Mute ring">🔊</button><input type="range" id="ringVolume" min="0" max="100" value="70"></div></div>
     <div class="menu-divider"></div>
     <button class="menu-item danger" id="resetBtn">Reset</button>
   </div>
@@ -272,18 +294,32 @@
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <input type="file" id="importThemeFile" accept="application/json,.json" hidden>
 
-<div class="modal-back" id="editModal"><div class="modal"><h3 id="editModalTitle">New Task</h3>
+<div class="modal-back" id="editModal"><div class="modal">
+  <div class="modal-head">
+    <h3 id="editModalTitle">New Task</h3>
+    <div class="modal-head-actions">
+      <button id="editDuplicateBtn" hidden>Duplicate</button>
+      <button id="editCancelBtn">Cancel</button>
+      <button class="primary" id="editSaveBtn">Save</button>
+    </div>
+  </div>
   <input id="cardTitleInput" placeholder="Untitled task" autocomplete="off">
   <input id="cardLinkInput" type="url" placeholder="https://example.com optional" autocomplete="off">
   <textarea id="cardDescInput" placeholder="Add details. URLs become clickable."></textarea>
-  <div class="modal-row"><button id="editDuplicateBtn" hidden>Duplicate</button><button id="editCancelBtn">Cancel</button><button class="primary" id="editSaveBtn">Save</button></div>
 </div></div>
 
-<div class="modal-back" id="viewModal"><div class="modal"><h3>Card</h3>
+<div class="modal-back" id="viewModal"><div class="modal">
+  <div class="modal-head">
+    <h3>Card</h3>
+    <div class="modal-head-actions">
+      <button class="danger" id="viewDeleteBtn">Delete</button>
+      <button id="viewEditBtn">Edit</button>
+      <button class="primary" id="viewCloseBtn">Close</button>
+    </div>
+  </div>
   <div class="view-title" id="viewTitle"></div>
   <a id="viewLinkBtn" class="view-link" target="_blank" rel="noopener noreferrer" style="display:none">🔗 <span id="viewLinkText"></span></a>
   <div class="desc-view" id="viewDesc"></div>
-  <div class="modal-row"><button class="danger" id="viewDeleteBtn">Delete</button><button id="viewEditBtn">Edit</button><button class="primary" id="viewCloseBtn">Close</button></div>
 </div></div>
 
 <div class="modal-back" id="confirmModal"><div class="modal"><h3 id="confirmTitle">Are you sure?</h3>
@@ -333,6 +369,7 @@ const STOCK_THEMES={
 
 const STORAGE_KEY='kanban.v9';const TITLE_KEY='kanban.v9.title';const THEME_KEY='kanban.v9.theme';const CUSTOM_KEY='kanban.v9.customThemes';
 const MUTE_KEY='kanban.v9.muted';const SFX_VOL_KEY='kanban.v9.sfxVol';const TICK_VOL_KEY='kanban.v9.tickVol';const RING_VOL_KEY='kanban.v9.ringVol';
+const TYPING_VOL_KEY='kanban.v9.typingVol';const TYPING_MUTED_KEY='kanban.v9.typingMuted';const SFX_MUTED_KEY='kanban.v9.sfxMuted';const TICK_MUTED_KEY='kanban.v9.tickMuted';const RING_MUTED_KEY='kanban.v9.ringMuted';
 const SITE_ICON_KEY='kanban.v9.siteIcon';const POMO_DEFAULT_KEY='kanban.v9.pomoDefaultMin';const POMO_MAX_KEY='kanban.v9.pomoMaxMin';
 
 function rid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
@@ -364,7 +401,8 @@ let editContext=null;
 let viewContext=null;
 let confirmCb=null;
 let muted=localStorage.getItem(MUTE_KEY)==='1';
-let sfxVolume=numStore(SFX_VOL_KEY,.6),tickVolume=numStore(TICK_VOL_KEY,.35),ringVolume=numStore(RING_VOL_KEY,.7);
+let sfxVolume=numStore(SFX_VOL_KEY,.6),tickVolume=numStore(TICK_VOL_KEY,.35),ringVolume=numStore(RING_VOL_KEY,.7),typingVolume=numStore(TYPING_VOL_KEY,.4);
+let sfxMuted=localStorage.getItem(SFX_MUTED_KEY)==='1',tickMuted=localStorage.getItem(TICK_MUTED_KEY)==='1',ringMuted=localStorage.getItem(RING_MUTED_KEY)==='1',typingMuted=localStorage.getItem(TYPING_MUTED_KEY)==='1';
 let pomoDefaultMin=intStore(POMO_DEFAULT_KEY,25);
 let pomoMaxMin=intStore(POMO_MAX_KEY,25);
 
@@ -617,7 +655,25 @@ function renderActiveBoard(){
     boardEl.appendChild(renderColumn(col));
     boardEl.appendChild(makeGap('col',i+1));
   });
+  boardEl.appendChild(renderColumnAddBtn());
   persist();
+}
+function renderColumnAddBtn(){
+  const el=document.createElement('button');
+  el.className='column column-add-btn';
+  el.type='button';
+  el.title='Add a new column';
+  const icon=document.createElement('div');icon.className='cab-icon';icon.textContent='+';
+  const label=document.createElement('div');label.className='cab-label';label.textContent='Add Column';
+  el.append(icon,label);
+  el.addEventListener('click',()=>addColumnAt(activeBoard().columns.length));
+  if(columnClipboard){
+    const paste=document.createElement('div');paste.className='cab-paste';paste.textContent='📋 Paste Column';
+    paste.title=`Paste "${columnClipboard.title}"`;
+    paste.addEventListener('click',e=>{e.stopPropagation();pasteColumnAt(activeBoard().columns.length)});
+    el.appendChild(paste);
+  }
+  return el;
 }
 function addColumnAt(index){
   const col={id:rid(),title:'New Column',cards:[]};
@@ -629,7 +685,7 @@ function addColumnAt(index){
   });
 }
 function cloneColumn(col){return{id:rid(),title:(col.title||'Column')+' Copy',cards:(col.cards||[]).map(c=>({...c,id:rid()}))}}
-function copyColumn(col){columnClipboard=JSON.parse(JSON.stringify(col));toast(`Copied column: ${col.title}`)}
+function copyColumn(col){columnClipboard=JSON.parse(JSON.stringify(col));toast(`Copied column: ${col.title}`);renderActiveBoard()}
 function pasteColumnAt(index){
   if(!columnClipboard)return;
   activeBoard().columns.splice(index,0,cloneColumn(columnClipboard));
@@ -704,10 +760,13 @@ function renderColumn(col){
 function positionColGhost(x,y){if(!colDrag)return;colDrag.ghost.style.transform=`translate(${x-colDrag.offsetX}px, ${y-colDrag.offsetY}px) rotate(-1deg) scale(1.02)`}
 function updateColDropTarget(ev){
   if(!colDrag)return;
-  const cols=[...boardEl.querySelectorAll(':scope > .column')];
+  const cols=[...boardEl.querySelectorAll(':scope > .column:not(.column-add-btn)')];
   let before=null;
   for(const c of cols){const r=c.getBoundingClientRect();if(ev.clientX<r.left+r.width/2){before=c;break}}
-  if(before)boardEl.insertBefore(colDrag.placeholder,before);else boardEl.appendChild(colDrag.placeholder);
+  const addBtn=boardEl.querySelector(':scope > .column-add-btn');
+  if(before)boardEl.insertBefore(colDrag.placeholder,before);
+  else if(addBtn)boardEl.insertBefore(colDrag.placeholder,addBtn);
+  else boardEl.appendChild(colDrag.placeholder);
 }
 function finishColDrag(){
   if(!colDrag)return;
@@ -715,7 +774,7 @@ function finishColDrag(){
   const parent=colDrag.placeholder.parentNode;
   if(parent)parent.insertBefore(colDrag.section,colDrag.placeholder);
   if(colDrag.placeholder.parentNode)colDrag.placeholder.remove();
-  const ids=[...boardEl.querySelectorAll(':scope > .column')].map(el=>el.dataset.colId);
+  const ids=[...boardEl.querySelectorAll(':scope > .column:not(.column-add-btn)')].map(el=>el.dataset.colId);
   const byId={};b.columns.forEach(c=>byId[c.id]=c);
   const reordered=ids.map(id=>byId[id]).filter(Boolean);
   if(reordered.length===b.columns.length)b.columns=reordered;
@@ -877,22 +936,34 @@ const audio=(()=>{
     g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(vol,now+.005);g.gain.exponentialRampToValueAtTime(.0001,now+dur);
     osc.connect(g).connect(ac.destination);osc.start(now);osc.stop(now+dur+.02);
   }
-  function tick(){tone(1050,650,.035,.13*tickVolume,'square')}
-  function ring(){tone(880,880,.16,.18*ringVolume,'sine');setTimeout(()=>tone(1175,1175,.18,.14*ringVolume,'sine'),190)}
+  function tick(){if(tickMuted)return;tone(1050,650,.035,.13*tickVolume,'square')}
+  function ring(){if(ringMuted)return;tone(880,880,.16,.18*ringVolume,'sine');setTimeout(()=>{if(!ringMuted)tone(1175,1175,.18,.14*ringVolume,'sine')},190)}
   return{
     tone,tick,
-    startTicking(){this.stopTicking();if(muted||tickVolume<=0)return;tick();tickTimer=setInterval(tick,1000)},
+    startTicking(){this.stopTicking();if(muted||tickMuted||tickVolume<=0)return;tick();tickTimer=setInterval(tick,1000)},
     stopTicking(){clearInterval(tickTimer);tickTimer=null},
-    startRinging(){this.stopRinging();if(muted||ringVolume<=0)return;ring();ringTimer=setInterval(ring,650)},
+    startRinging(){this.stopRinging();if(muted||ringMuted||ringVolume<=0)return;ring();ringTimer=setInterval(ring,650)},
     stopRinging(){clearInterval(ringTimer);ringTimer=null}
   };
 })();
 const sfx={
-  click(){audio.tone(880,520,.07,.05*sfxVolume)},
-  pluck(){audio.tone(660,330,.16,.12*sfxVolume)},
-  pop(){audio.tone(220,90,.15,.14*sfxVolume,'sine')}
+  click(){if(sfxMuted)return;audio.tone(880,520,.07,.05*sfxVolume)},
+  pluck(){if(sfxMuted)return;audio.tone(660,330,.16,.12*sfxVolume)},
+  pop(){if(sfxMuted)return;audio.tone(220,90,.15,.14*sfxVolume,'sine')},
+  type(){if(typingMuted||typingVolume<=0)return;audio.tone(1500,1150,.02,.05*typingVolume,'square')}
 };
 document.addEventListener('click',e=>{if(e.target.closest('button,.tool,.card,.theme-item'))sfx.click()},true);
+let lastTypeSound=0;
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if(!(t instanceof HTMLElement))return;
+  const editable=t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable;
+  if(!editable||e.ctrlKey||e.metaKey||e.altKey)return;
+  const k=e.key;
+  if(k.length!==1&&k!=='Backspace'&&k!=='Delete'&&k!==' ')return;
+  const now=Date.now();if(now-lastTypeSound<28)return;lastTypeSound=now;
+  sfx.type();
+});
 
 /* ---------- Pomodoro (neumorphic roller) ---------- */
 const pomo=document.getElementById('pomo'),pomoState=document.getElementById('pomoState'),pomoFill=document.getElementById('pomoFill'),pomoTicks=document.getElementById('pomoTicks'),pomoRoller=document.getElementById('pomoRoller');
@@ -1052,12 +1123,33 @@ muteFab.onclick=e=>{
   e.stopPropagation();muted=!muted;localStorage.setItem(MUTE_KEY,muted?'1':'0');muteFab.textContent=muted?'Sound: Off':'Sound: On';
   if(muted){audio.stopTicking();audio.stopRinging()}else{sfx.click();if(pomoTimer)audio.startTicking();if(pomoRinging)audio.startRinging()}
 };
+document.getElementById('typingVolume').value=Math.round(typingVolume*100);
 document.getElementById('sfxVolume').value=Math.round(sfxVolume*100);
 document.getElementById('tickVolume').value=Math.round(tickVolume*100);
 document.getElementById('ringVolume').value=Math.round(ringVolume*100);
+document.getElementById('typingVolume').oninput=e=>{typingVolume=Number(e.target.value)/100;localStorage.setItem(TYPING_VOL_KEY,String(typingVolume))};
 document.getElementById('sfxVolume').oninput=e=>{sfxVolume=Number(e.target.value)/100;localStorage.setItem(SFX_VOL_KEY,String(sfxVolume))};
 document.getElementById('tickVolume').oninput=e=>{tickVolume=Number(e.target.value)/100;localStorage.setItem(TICK_VOL_KEY,String(tickVolume));if(pomoTimer){audio.stopTicking();audio.startTicking()}};
 document.getElementById('ringVolume').oninput=e=>{ringVolume=Number(e.target.value)/100;localStorage.setItem(RING_VOL_KEY,String(ringVolume));if(pomoRinging){audio.stopRinging();audio.startRinging()}};
+
+function setupSoundMuteBtn(btnId,storeKey,getFlag,setFlag,onToggle){
+  const btn=document.getElementById(btnId);
+  const paint=()=>{const m=getFlag();btn.textContent=m?'🔇':'🔊';btn.classList.toggle('is-muted',m);btn.title=(m?'Unmute':'Mute')+' '+btn.dataset.label};
+  paint();
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    setFlag(!getFlag());localStorage.setItem(storeKey,getFlag()?'1':'0');paint();
+    if(onToggle)onToggle(getFlag());
+  });
+}
+document.getElementById('typingMuteBtn').dataset.label='typing clicks';
+document.getElementById('sfxMuteBtn').dataset.label='interface sounds';
+document.getElementById('tickMuteBtn').dataset.label='ticking';
+document.getElementById('ringMuteBtn').dataset.label='ring';
+setupSoundMuteBtn('typingMuteBtn',TYPING_MUTED_KEY,()=>typingMuted,v=>typingMuted=v,m=>{if(!m)sfx.type()});
+setupSoundMuteBtn('sfxMuteBtn',SFX_MUTED_KEY,()=>sfxMuted,v=>sfxMuted=v,m=>{if(!m)sfx.click()});
+setupSoundMuteBtn('tickMuteBtn',TICK_MUTED_KEY,()=>tickMuted,v=>tickMuted=v,m=>{if(pomoTimer){audio.stopTicking();audio.startTicking()}});
+setupSoundMuteBtn('ringMuteBtn',RING_MUTED_KEY,()=>ringMuted,v=>ringMuted=v,m=>{if(pomoRinging){audio.stopRinging();audio.startRinging()}});
 
 const pomoDefaultInput=document.getElementById('pomoDefaultInput'),pomoMaxInput=document.getElementById('pomoMaxInput');
 pomoDefaultInput.value=pomoDefaultMin;pomoMaxInput.value=pomoMaxMin;
